@@ -2,7 +2,7 @@ package com.timalsinarajkumar.blog_api.services.impl;
 
 import com.timalsinarajkumar.blog_api.dto.auth.LoginDto;
 import com.timalsinarajkumar.blog_api.dto.auth.RegisterDto;
-import com.timalsinarajkumar.blog_api.dto.auth.UserResponse;
+import com.timalsinarajkumar.blog_api.dto.auth.UserResponseDto;
 import com.timalsinarajkumar.blog_api.entities.User;
 import com.timalsinarajkumar.blog_api.exception.ConflictException;
 import com.timalsinarajkumar.blog_api.exception.ResourceNotFoundException;
@@ -11,7 +11,6 @@ import com.timalsinarajkumar.blog_api.security.JwtService;
 import com.timalsinarajkumar.blog_api.services.AuthService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public UserResponse register(RegisterDto registerDto) {
+    public UserResponseDto register(RegisterDto registerDto) {
         String email = registerDto.getEmail().trim().toLowerCase();
 
         if (userRepository.existsByEmail(email)) {
@@ -48,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
         User savedUser = userRepository.save(user);
 
-        return new UserResponse(
+        return new UserResponseDto(
                 savedUser.getId(),
                 savedUser.getFullName(),
                 savedUser.getEmail(),
@@ -58,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserResponse login(LoginDto loginDto) {
+    public UserResponseDto login(LoginDto loginDto) {
         String email = loginDto.getEmail().trim().toLowerCase();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, loginDto
                 .getPassword()));
@@ -67,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtService.generateToken(user);
 
-        return new UserResponse(
+        return new UserResponseDto(
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),

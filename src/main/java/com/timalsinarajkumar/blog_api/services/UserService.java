@@ -1,13 +1,13 @@
 package com.timalsinarajkumar.blog_api.services;
 
-import com.timalsinarajkumar.blog_api.dto.auth.UserResponse;
+import com.timalsinarajkumar.blog_api.dto.auth.UserResponseDto;
 import com.timalsinarajkumar.blog_api.dto.user.UpdateUserDto;
 
 public interface UserService {
 
-    UserResponse getUser(Long id);
+    UserResponseDto getUser(Long id);
 
-    UserResponse updateUser(Long id, UpdateUserDto updateUserDto);
+    UserResponseDto updateUser(Long id, UpdateUserDto updateUserDto);
 
     void deleteUser(Long id);
 }

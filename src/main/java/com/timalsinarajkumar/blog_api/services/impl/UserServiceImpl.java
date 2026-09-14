@@ -1,6 +1,6 @@
 package com.timalsinarajkumar.blog_api.services.impl;
 
-import com.timalsinarajkumar.blog_api.dto.auth.UserResponse;
+import com.timalsinarajkumar.blog_api.dto.auth.UserResponseDto;
 import com.timalsinarajkumar.blog_api.dto.user.UpdateUserDto;
 import com.timalsinarajkumar.blog_api.entities.User;
 import com.timalsinarajkumar.blog_api.exception.ResourceNotFoundException;
@@ -18,9 +18,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUser(Long id) {
+    public UserResponseDto getUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return new UserResponse(
+        return new UserResponseDto(
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(Long id, UpdateUserDto updateUserDto) {
+    public UserResponseDto updateUser(Long id, UpdateUserDto updateUserDto) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (updateUserDto.getEmail() != null) {
             user.setEmail(updateUserDto.getEmail());
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User updatedUser = userRepository.save(user);
-        return new UserResponse(
+        return new UserResponseDto(
                 updatedUser.getId(),
                 updatedUser.getFullName(),
                 updatedUser.getEmail(),

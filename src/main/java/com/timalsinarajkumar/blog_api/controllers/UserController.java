@@ -1,6 +1,6 @@
 package com.timalsinarajkumar.blog_api.controllers;
 
-import com.timalsinarajkumar.blog_api.dto.auth.UserResponse;
+import com.timalsinarajkumar.blog_api.dto.auth.UserResponseDto;
 import com.timalsinarajkumar.blog_api.dto.user.UpdateUserDto;
 import com.timalsinarajkumar.blog_api.response.ApiResponse;
 import com.timalsinarajkumar.blog_api.security.CustomUserDetails;
@@ -21,13 +21,13 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<UserResponse>> getUser(Authentication authentication) {
+    public ResponseEntity<ApiResponse<UserResponseDto>> getUser(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return ResponseEntity.ok(ApiResponse.success("User fetched successfully", userService.getUser(userDetails.getUserId())));
     }
 
     @PatchMapping()
-    public ResponseEntity<ApiResponse<UserResponse>> updateUser(Authentication authentication, @Valid @RequestBody UpdateUserDto updateUserDto) {
+    public ResponseEntity<ApiResponse<UserResponseDto>> updateUser(Authentication authentication, @Valid @RequestBody UpdateUserDto updateUserDto) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return ResponseEntity.ok(ApiResponse.success("User updated successfully", userService.updateUser(userDetails.getUserId(), updateUserDto)));
     }
