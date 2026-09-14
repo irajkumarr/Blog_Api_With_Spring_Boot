@@ -1,5 +1,6 @@
 package com.timalsinarajkumar.blog_api.controllers;
 
+import com.timalsinarajkumar.blog_api.dto.auth.LoginDto;
 import com.timalsinarajkumar.blog_api.dto.auth.RegisterDto;
 import com.timalsinarajkumar.blog_api.dto.auth.UserResponse;
 import com.timalsinarajkumar.blog_api.response.ApiResponse;
@@ -28,5 +29,11 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Registered successfully", response));
 
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<UserResponse>> login(@Valid @RequestBody LoginDto loginDto) {
+        UserResponse response = authService.login(loginDto);
+        return ResponseEntity.ok(ApiResponse.success("Login successful", response));
     }
 }

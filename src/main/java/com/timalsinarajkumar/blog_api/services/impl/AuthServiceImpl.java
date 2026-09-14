@@ -5,8 +5,13 @@ import com.timalsinarajkumar.blog_api.dto.auth.RegisterDto;
 import com.timalsinarajkumar.blog_api.dto.auth.UserResponse;
 import com.timalsinarajkumar.blog_api.entities.User;
 import com.timalsinarajkumar.blog_api.exception.ConflictException;
+import com.timalsinarajkumar.blog_api.exception.ResourceNotFoundException;
 import com.timalsinarajkumar.blog_api.repositories.UserRepository;
+import com.timalsinarajkumar.blog_api.security.JwtService;
 import com.timalsinarajkumar.blog_api.services.AuthService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +20,14 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
 
@@ -30,14 +39,14 @@ public class AuthServiceImpl implements AuthService {
             throw new ConflictException("User with same email already exists in our database");
         }
 
-        User user=new User();
+        User user = new User();
 
         user.setFullName(registerDto.getFullName());
         user.setEmail(email);
         user.setPhone(registerDto.getPhone());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-       User savedUser= userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         return new UserResponse(
                 savedUser.getId(),
@@ -50,6 +59,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserResponse login(LoginDto loginDto) {
-        return null;
+        String email = loginDto.getEmail().trim().toLowerCase();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, loginDto
+                .getPassword()));
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        String token = jwtService.generateToken(user);
+
+        return new UserResponse(
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getPhone(),
+                token
+        );
     }
 }

@@ -2,7 +2,9 @@ package com.timalsinarajkumar.blog_api.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
+@Data
 public class LoginDto {
     @NotBlank(message = "Email is required")
     @Email(message = "Please provide valid email")
