@@ -5,6 +5,7 @@ import com.timalsinarajkumar.blog_api.dto.auth.UserResponse;
 import com.timalsinarajkumar.blog_api.response.ApiResponse;
 import com.timalsinarajkumar.blog_api.services.AuthService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,10 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody RegisterDto registerDto){
+    public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody RegisterDto registerDto) {
+        UserResponse response = authService.register(registerDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Registered successfully", response));
 
     }
 }

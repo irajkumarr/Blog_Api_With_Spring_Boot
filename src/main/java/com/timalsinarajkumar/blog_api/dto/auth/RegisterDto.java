@@ -3,9 +3,7 @@ package com.timalsinarajkumar.blog_api.dto.auth;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class RegisterDto {
@@ -21,7 +19,7 @@ public class RegisterDto {
     private String password;
 
     @NotBlank(message = "Phone is required")
-    @Pattern(regexp = "^\\d{10}$\n", message = "Please provide valid phone")
+    @Pattern(regexp = "^\\d{10}$", message = "Please provide valid phone")
     private String phone;
 
 }
