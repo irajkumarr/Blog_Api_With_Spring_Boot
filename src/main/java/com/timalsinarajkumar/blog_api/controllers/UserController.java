@@ -5,12 +5,14 @@ import com.timalsinarajkumar.blog_api.dto.user.UpdateUserDto;
 import com.timalsinarajkumar.blog_api.response.ApiResponse;
 import com.timalsinarajkumar.blog_api.security.CurrentUserId;
 import com.timalsinarajkumar.blog_api.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/users")
+@Tag(name = "Users", description = "APIs for managing user accounts")
 public class UserController {
 
     private final UserService userService;

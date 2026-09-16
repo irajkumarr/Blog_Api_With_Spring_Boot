@@ -10,9 +10,11 @@ import com.timalsinarajkumar.blog_api.exception.UnauthorizedException;
 import com.timalsinarajkumar.blog_api.repositories.PostRepository;
 import com.timalsinarajkumar.blog_api.repositories.UserRepository;
 import com.timalsinarajkumar.blog_api.services.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -56,14 +58,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponseDto> getAllPosts(Long userId) {
+    public Page<PostResponseDto> getAllPosts(Long userId, int page, int size, String sortBy) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        List<Post> posts = postRepository.findAllByAuthor(user);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        Page<Post> posts = postRepository.findAllByAuthor(user, pageable);
 
-        return posts.stream()
+        return posts
                 .map(post -> new PostResponseDto(
                         post.getId(),
                         post.getTitle(),
@@ -71,8 +74,7 @@ public class PostServiceImpl implements PostService {
                         post.isPublished(),
                         post.getAuthor().getId(),
                         post.getCreatedAt()
-                ))
-                .toList();
+                ));
     }
 
     @Override

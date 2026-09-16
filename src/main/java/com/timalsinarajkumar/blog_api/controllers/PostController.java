@@ -6,15 +6,16 @@ import com.timalsinarajkumar.blog_api.dto.post.UpdatePostDto;
 import com.timalsinarajkumar.blog_api.response.ApiResponse;
 import com.timalsinarajkumar.blog_api.security.CurrentUserId;
 import com.timalsinarajkumar.blog_api.services.PostService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/posts")
+@Tag(name = "Posts", description = "APIs for managing blog posts")
 public class PostController {
 
     private final PostService postService;
@@ -43,12 +44,16 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponseDto>>> getAllPosts(
-            @CurrentUserId Long userId) {
+    public ResponseEntity<ApiResponse<Page<PostResponseDto>>> getAllPosts(
+            @CurrentUserId Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ) {
 
 
-        List<PostResponseDto> posts =
-                postService.getAllPosts(userId);
+        Page<PostResponseDto> posts =
+                postService.getAllPosts(userId, page, size, sortBy);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
