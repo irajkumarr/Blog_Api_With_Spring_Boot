@@ -4,12 +4,11 @@ import com.timalsinarajkumar.blog_api.dto.post.CreatePostDto;
 import com.timalsinarajkumar.blog_api.dto.post.PostResponseDto;
 import com.timalsinarajkumar.blog_api.dto.post.UpdatePostDto;
 import com.timalsinarajkumar.blog_api.response.ApiResponse;
-import com.timalsinarajkumar.blog_api.security.CustomUserDetails;
+import com.timalsinarajkumar.blog_api.security.CurrentUserId;
 import com.timalsinarajkumar.blog_api.services.PostService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,15 +25,12 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponseDto>> createPost(
-            Authentication authentication,
+            @CurrentUserId Long userId,
             @Valid @RequestBody CreatePostDto createPostDto) {
-
-        CustomUserDetails userDetails =
-                (CustomUserDetails) authentication.getPrincipal();
 
         PostResponseDto postResponseDto =
                 postService.createPost(
-                        userDetails.getUserId(),
+                        userId,
                         createPostDto
                 );
 
@@ -48,13 +44,11 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<PostResponseDto>>> getAllPosts(
-            Authentication authentication) {
+            @CurrentUserId Long userId) {
 
-        CustomUserDetails userDetails =
-                (CustomUserDetails) authentication.getPrincipal();
 
         List<PostResponseDto> posts =
-                postService.getAllPosts(userDetails.getUserId());
+                postService.getAllPosts(userId);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
@@ -66,16 +60,14 @@ public class PostController {
 
     @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(
-            Authentication authentication,
+            @CurrentUserId Long userId,
             @PathVariable Long postId,
             @Valid @RequestBody UpdatePostDto updatePostDto) {
 
-        CustomUserDetails userDetails =
-                (CustomUserDetails) authentication.getPrincipal();
 
         PostResponseDto updatedPost =
                 postService.updatePost(
-                        userDetails.getUserId(),
+                        userId,
                         postId,
                         updatePostDto
                 );
@@ -90,14 +82,11 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<String>> deletePost(
-            Authentication authentication,
+            @CurrentUserId Long userId,
             @PathVariable Long postId) {
 
-        CustomUserDetails userDetails =
-                (CustomUserDetails) authentication.getPrincipal();
-
         postService.deletePost(
-                userDetails.getUserId(),
+                userId,
                 postId
         );
 

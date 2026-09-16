@@ -3,11 +3,10 @@ package com.timalsinarajkumar.blog_api.controllers;
 import com.timalsinarajkumar.blog_api.dto.auth.UserResponseDto;
 import com.timalsinarajkumar.blog_api.dto.user.UpdateUserDto;
 import com.timalsinarajkumar.blog_api.response.ApiResponse;
-import com.timalsinarajkumar.blog_api.security.CustomUserDetails;
+import com.timalsinarajkumar.blog_api.security.CurrentUserId;
 import com.timalsinarajkumar.blog_api.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,21 +20,18 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<UserResponseDto>> getUser(Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return ResponseEntity.ok(ApiResponse.success("User fetched successfully", userService.getUser(userDetails.getUserId())));
+    public ResponseEntity<ApiResponse<UserResponseDto>> getUser(@CurrentUserId Long userId) {
+        return ResponseEntity.ok(ApiResponse.success("User fetched successfully", userService.getUser(userId)));
     }
 
     @PatchMapping()
-    public ResponseEntity<ApiResponse<UserResponseDto>> updateUser(Authentication authentication, @Valid @RequestBody UpdateUserDto updateUserDto) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return ResponseEntity.ok(ApiResponse.success("User updated successfully", userService.updateUser(userDetails.getUserId(), updateUserDto)));
+    public ResponseEntity<ApiResponse<UserResponseDto>> updateUser(@CurrentUserId Long userId, @Valid @RequestBody UpdateUserDto updateUserDto) {
+        return ResponseEntity.ok(ApiResponse.success("User updated successfully", userService.updateUser(userId, updateUserDto)));
     }
 
     @DeleteMapping()
-    public ResponseEntity<String> delete(Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        userService.deleteUser(userDetails.getUserId());
+    public ResponseEntity<String> delete(@CurrentUserId Long userId) {
+        userService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
 
