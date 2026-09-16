@@ -3,7 +3,7 @@ package com.timalsinarajkumar.blog_api.controllers;
 import com.timalsinarajkumar.blog_api.dto.auth.LoginDto;
 import com.timalsinarajkumar.blog_api.dto.auth.RegisterDto;
 import com.timalsinarajkumar.blog_api.dto.auth.UserResponseDto;
-import com.timalsinarajkumar.blog_api.response.ApiResponse;
+import com.timalsinarajkumar.blog_api.dto.common.ApiResponse;
 import com.timalsinarajkumar.blog_api.services.AuthService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;

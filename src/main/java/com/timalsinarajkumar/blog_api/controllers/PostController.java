@@ -1,9 +1,10 @@
 package com.timalsinarajkumar.blog_api.controllers;
 
+import com.timalsinarajkumar.blog_api.dto.common.ApiResponse;
+import com.timalsinarajkumar.blog_api.dto.common.PaginationMeta;
 import com.timalsinarajkumar.blog_api.dto.post.CreatePostDto;
 import com.timalsinarajkumar.blog_api.dto.post.PostResponseDto;
 import com.timalsinarajkumar.blog_api.dto.post.UpdatePostDto;
-import com.timalsinarajkumar.blog_api.response.ApiResponse;
 import com.timalsinarajkumar.blog_api.security.CurrentUserId;
 import com.timalsinarajkumar.blog_api.services.PostService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -44,7 +47,7 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<PostResponseDto>>> getAllPosts(
+    public ResponseEntity<ApiResponse<List<PostResponseDto>>> getAllPosts(
             @CurrentUserId Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -52,13 +55,22 @@ public class PostController {
     ) {
 
 
-        Page<PostResponseDto> posts =
+        Page<PostResponseDto> servicePage =
                 postService.getAllPosts(userId, page, size, sortBy);
+
+        PaginationMeta meta = new PaginationMeta(
+                servicePage.getNumber(),          // current page
+                servicePage.getSize(),            // limit
+                servicePage.getTotalPages(),      // total pages
+                servicePage.getTotalElements()    // total count
+        );
+
 
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "Posts retrieved successfully",
-                        posts
+                        servicePage.getContent(),
+                        meta
                 )
         );
     }

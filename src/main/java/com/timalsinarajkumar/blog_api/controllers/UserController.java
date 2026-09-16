@@ -1,8 +1,8 @@
 package com.timalsinarajkumar.blog_api.controllers;
 
 import com.timalsinarajkumar.blog_api.dto.auth.UserResponseDto;
+import com.timalsinarajkumar.blog_api.dto.common.ApiResponse;
 import com.timalsinarajkumar.blog_api.dto.user.UpdateUserDto;
-import com.timalsinarajkumar.blog_api.response.ApiResponse;
 import com.timalsinarajkumar.blog_api.security.CurrentUserId;
 import com.timalsinarajkumar.blog_api.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
