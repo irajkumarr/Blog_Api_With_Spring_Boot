@@ -5,10 +5,12 @@ import com.timalsinarajkumar.blog_api.dto.auth.RegisterDto;
 import com.timalsinarajkumar.blog_api.dto.auth.UserResponseDto;
 import com.timalsinarajkumar.blog_api.entities.User;
 import com.timalsinarajkumar.blog_api.exception.ConflictException;
+import com.timalsinarajkumar.blog_api.exception.CustomException;
 import com.timalsinarajkumar.blog_api.exception.ResourceNotFoundException;
 import com.timalsinarajkumar.blog_api.repositories.UserRepository;
 import com.timalsinarajkumar.blog_api.security.JwtService;
 import com.timalsinarajkumar.blog_api.services.AuthService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,6 +40,13 @@ public class AuthServiceImpl implements AuthService {
             throw new ConflictException("User with same email already exists in our database");
         }
 
+        if (userRepository.existsByPhone(registerDto.getPhone())) {
+            throw new CustomException(
+                    "Phone number already exists",
+                    HttpStatus.CONFLICT
+            );
+        }
+
         User user = new User();
 
         user.setFullName(registerDto.getFullName());
@@ -52,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
                 savedUser.getFullName(),
                 savedUser.getEmail(),
                 savedUser.getPhone(),
+                savedUser.getRole().name(),
                 null
         );
     }
@@ -71,6 +81,7 @@ public class AuthServiceImpl implements AuthService {
                 user.getFullName(),
                 user.getEmail(),
                 user.getPhone(),
+                user.getRole().name(),
                 token
         );
     }

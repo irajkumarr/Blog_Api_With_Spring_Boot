@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
                 user.getFullName(),
                 user.getEmail(),
                 user.getPhone(),
+                user.getRole().name(),
                 null
         );
     }
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
                 user.getFullName(),
                 user.getEmail(),
                 user.getPhone(),
+                user.getRole().name(),
                 null
         )).toList();
     }
@@ -61,6 +63,7 @@ public class UserServiceImpl implements UserService {
                 updatedUser.getFullName(),
                 updatedUser.getEmail(),
                 updatedUser.getPhone(),
+                updatedUser.getRole().name(),
                 null
         );
     }

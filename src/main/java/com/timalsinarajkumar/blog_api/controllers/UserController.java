@@ -8,6 +8,7 @@ import com.timalsinarajkumar.blog_api.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<UserResponseDto>>> getAllUsers() {
         return ResponseEntity.ok(ApiResponse.success("Users fetched successfully", userService.getAllUsers()));
     }
