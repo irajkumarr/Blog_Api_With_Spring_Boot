@@ -8,6 +8,8 @@ import com.timalsinarajkumar.blog_api.repositories.UserRepository;
 import com.timalsinarajkumar.blog_api.services.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -27,6 +29,17 @@ public class UserServiceImpl implements UserService {
                 user.getPhone(),
                 null
         );
+    }
+
+    @Override
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll().stream().map(user -> new UserResponseDto(
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getPhone(),
+                null
+        )).toList();
     }
 
     @Override

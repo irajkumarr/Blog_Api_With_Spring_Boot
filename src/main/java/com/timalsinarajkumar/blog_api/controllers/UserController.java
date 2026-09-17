@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/users")
 @Tag(name = "Users", description = "APIs for managing user accounts")
@@ -24,6 +26,11 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserResponseDto>> getUser(@CurrentUserId Long userId) {
         return ResponseEntity.ok(ApiResponse.success("User fetched successfully", userService.getUser(userId)));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<UserResponseDto>>> getAllUsers() {
+        return ResponseEntity.ok(ApiResponse.success("Users fetched successfully", userService.getAllUsers()));
     }
 
     @PatchMapping()
