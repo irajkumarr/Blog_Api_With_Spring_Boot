@@ -8,11 +8,12 @@ import com.timalsinarajkumar.blog_api.dto.post.UpdatePostDto;
 import com.timalsinarajkumar.blog_api.security.CurrentUserId;
 import com.timalsinarajkumar.blog_api.services.PostService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,15 +28,19 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<PostResponseDto>> createPost(
             @CurrentUserId Long userId,
-            @Valid @RequestBody CreatePostDto createPostDto) {
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam(value = "published", defaultValue = "true") boolean published,
+            @RequestParam(value = "imageUrl", required = false) MultipartFile file) {
+        CreatePostDto createPostDto = new CreatePostDto(title, content, published);
 
         PostResponseDto postResponseDto =
                 postService.createPost(
                         userId,
-                        createPostDto
+                        createPostDto, file
                 );
 
         return ResponseEntity
@@ -75,12 +80,16 @@ public class PostController {
         );
     }
 
-    @PatchMapping("/{postId}")
+    @PatchMapping(value = "/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<PostResponseDto>> updatePost(
             @CurrentUserId Long userId,
             @PathVariable Long postId,
-            @Valid @RequestBody UpdatePostDto updatePostDto) {
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam(value = "published", defaultValue = "true") boolean published,
+            @RequestPart("imageUrl") MultipartFile file) {
 
+        UpdatePostDto updatePostDto = new UpdatePostDto(title, content, published);
 
         PostResponseDto updatedPost =
                 postService.updatePost(

@@ -1,9 +1,11 @@
 package com.timalsinarajkumar.blog_api.dto.post;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class CreatePostDto {
 
     @NotBlank(message = "Title is required")

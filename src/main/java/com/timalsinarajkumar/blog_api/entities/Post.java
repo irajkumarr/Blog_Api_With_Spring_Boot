@@ -25,6 +25,8 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = true)
+    private String imageUrl;
 
     @Column(nullable = false)
     private boolean published = false;

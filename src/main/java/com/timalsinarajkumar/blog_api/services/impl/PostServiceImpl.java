@@ -10,30 +10,37 @@ import com.timalsinarajkumar.blog_api.exception.UnauthorizedException;
 import com.timalsinarajkumar.blog_api.repositories.PostRepository;
 import com.timalsinarajkumar.blog_api.repositories.UserRepository;
 import com.timalsinarajkumar.blog_api.services.PostService;
+import com.timalsinarajkumar.blog_api.services.UploadService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final UploadService uploadService;
 
     public PostServiceImpl(
             PostRepository postRepository,
-            UserRepository userRepository
+            UserRepository userRepository, UploadService uploadService
     ) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.uploadService = uploadService;
     }
 
     @Override
     public PostResponseDto createPost(
             Long userId,
-            CreatePostDto createPostDto
+            CreatePostDto createPostDto,
+            MultipartFile file
     ) {
 
         User user = userRepository.findById(userId)
@@ -45,12 +52,23 @@ public class PostServiceImpl implements PostService {
         post.setContent(createPostDto.getContent());
         post.setAuthor(user);
 
+
+        if (file != null && !file.isEmpty()) {
+            try {
+                String imageUrl = uploadService.uploadImage(file);
+                post.setImageUrl(imageUrl);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to upload image", e);
+            }
+        }
+
         Post savedPost = postRepository.save(post);
 
         return new PostResponseDto(
                 savedPost.getId(),
                 savedPost.getTitle(),
                 savedPost.getContent(),
+                savedPost.getImageUrl(),
                 savedPost.isPublished(),
                 savedPost.getAuthor().getId(),
                 savedPost.getCreatedAt()
@@ -71,6 +89,7 @@ public class PostServiceImpl implements PostService {
                         post.getId(),
                         post.getTitle(),
                         post.getContent(),
+                        post.getImageUrl(),
                         post.isPublished(),
                         post.getAuthor().getId(),
                         post.getCreatedAt()
@@ -109,6 +128,7 @@ public class PostServiceImpl implements PostService {
                 updatedPost.getId(),
                 updatedPost.getTitle(),
                 updatedPost.getContent(),
+                updatedPost.getImageUrl(),
                 updatedPost.isPublished(),
                 updatedPost.getAuthor().getId(),
                 updatedPost.getCreatedAt()

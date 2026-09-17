@@ -4,10 +4,11 @@ import com.timalsinarajkumar.blog_api.dto.post.CreatePostDto;
 import com.timalsinarajkumar.blog_api.dto.post.PostResponseDto;
 import com.timalsinarajkumar.blog_api.dto.post.UpdatePostDto;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
 
-    PostResponseDto createPost(Long userId, CreatePostDto createPostDto);
+    PostResponseDto createPost(Long userId, CreatePostDto createPostDto, MultipartFile file);
 
     Page<PostResponseDto> getAllPosts(Long userId, int page, int size, String sortBy);
 
